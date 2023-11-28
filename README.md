@@ -43,10 +43,11 @@ requests more bytes.
 
 * Handler 2 Requests 200 bytes (Is allowed)
 
-Now 40% of our total soft limit is used, now only 60% of the top handlers are
+Now 40% of our total soft limit is used, now only 60% of the top instances are
 allowed to get new bytes.  This continues until 100% of the hard limit is used
-up. Once all 100% of the soft limit is used up only the top `deadLockCount`
-number of handlers can request new bytes. This ensures we don't deadlock
-waiting for handlers to release memory. If the `deadLockCount` is set to zero,
-then ALL pending Request() calls will deadlock until their respective contexts are
+up. Once all 100% of the hard limit is used up, the top `deadLockCount`
+number of instances that make further Request() calls will return `ErrOutOfMemory`.
+
+TODO: In the future it might be possible to add a flag to allow the top `deadLockCount`
+instances to continue to allocate memory or to lock until their contexts are
 canceled.
